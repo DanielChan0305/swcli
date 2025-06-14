@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"os"
@@ -60,20 +59,19 @@ buildExecutable builds an executable file fromo .cpp file
 
 Returns the terminal output and errors and compile is unsucessfully
 */
-func buildExecutable(filename string) (string, error) {
+func buildExecutable(filename string) error {
 	var filenameWithoutExtension = strings.TrimSuffix(filename, filepath.Ext(filename))
 	cmd := exec.Command("bash", "-c", fmt.Sprintf("g++ %s -o %s", filename, filenameWithoutExtension), "--color=force")
 
-	var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
 	err := cmd.Run()
 	if err != nil {
-		return stderr.String(), err
+		return err
 	}
 
-	return stdout.String(), nil
+	return nil
 }
 
 // compileCmd handles the compilation of executables from c++ source files
@@ -94,13 +92,9 @@ var compileCmd = &cobra.Command{
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// start compiling
-		msg, err := buildExecutable(args[0])
+		err := buildExecutable(args[0])
 
 		if err != nil {
-			fmt.Println("⚠️ Something went wrong !")
-			fmt.Println()
-			fmt.Fprint(os.Stderr, msg)
-
 			return fmt.Errorf("%w", err)
 		}
 
