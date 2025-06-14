@@ -62,7 +62,7 @@ Returns the terminal output and errors and compile is unsucessfully
 */
 func buildExecutable(filename string) (string, error) {
 	var filenameWithoutExtension = strings.TrimSuffix(filename, filepath.Ext(filename))
-	cmd := exec.Command("bash", "-c", fmt.Sprintf("g++ %s -o %s", filename, filenameWithoutExtension))
+	cmd := exec.Command("bash", "-c", fmt.Sprintf("g++ %s -o %s", filename, filenameWithoutExtension), "--color=force")
 
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
@@ -97,12 +97,14 @@ var compileCmd = &cobra.Command{
 		msg, err := buildExecutable(args[0])
 
 		if err != nil {
-			fmt.Println(msg)
+			fmt.Println("⚠️ Something went wrong !")
+			fmt.Println()
+			fmt.Fprint(os.Stderr, msg)
+
 			return fmt.Errorf("%w", err)
 		}
 
-		fmt.Print(msg)
-		fmt.Println("File compiled successfully")
+		fmt.Println("✅ File compiled successfully")
 
 		return nil
 	},

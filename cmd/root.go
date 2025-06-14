@@ -17,6 +17,7 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
+	rootCmd.SetErrPrefix("❌")
 	if err := rootCmd.Execute(); err != nil {
 		//fmt.Fprintln(os.Stderr, "Error [root.go] :", err)
 		os.Exit(1)
