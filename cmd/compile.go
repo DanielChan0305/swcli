@@ -69,6 +69,9 @@ var compileCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// start compiling
+
+
 
 		fmt.Println("File compiled successfully")
 		return nil
