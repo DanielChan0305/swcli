@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
-	"regexp"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -27,11 +29,11 @@ func isFilenameValid(filename string) (bool, error) {
 	}
 
 	// check whether filename contains invalid characters
-	re := regexp.MustCompile(`^[A-Za-z0-9\\-\\._]+$`)
+	//re := regexp.MustCompile(`^[A-Za-z0-9\\-\\._]+$`)
 
-	if !re.MatchString(filename) {
-		return false, errors.New("filename contains invalid characters")
-	}
+	//if !re.MatchString(filename) {
+	//	return false, errors.New("filename contains invalid characters")
+	//}
 
 	// check whether file exists
 	info, err := os.Stat(filename)
@@ -53,27 +55,57 @@ func isFilenameValid(filename string) (bool, error) {
 	return true, nil
 }
 
+/*
+buildExecutable builds an executable file fromo .cpp file
+
+Returns the terminal output and errors and compile is unsucessfully
+*/
+func buildExecutable(filename string) (string, error) {
+	var filenameWithoutExtension = strings.TrimSuffix(filename, filepath.Ext(filename))
+	cmd := exec.Command("bash", "-c", fmt.Sprintf("g++ %s -o %s", filename, filenameWithoutExtension))
+
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	err := cmd.Run()
+	if err != nil {
+		return stderr.String(), err
+	}
+
+	return stdout.String(), nil
+}
+
 // compileCmd handles the compilation of executables from c++ source files
 var compileCmd = &cobra.Command{
-	Use:   "compile [FILENAME]",
+	Use:   "compile [filename]",
 	Short: "Compiles the cpp file into executable",
 	Args: func(cmd *cobra.Command, args []string) error {
+		// validates the filename
 		if len(args) < 1 {
-			return fmt.Errorf("filename can't be empty")
+			return errors.New("filename can't be empty")
 		}
 
 		if _, err := isFilenameValid(args[0]); err != nil {
-			return fmt.Errorf("%w", err)
+			return err
 		}
 
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// start compiling
+		msg, err := buildExecutable(args[0])
 
+		if err != nil {
+			fmt.Println(msg)
+			return fmt.Errorf("%w", err)
+		}
 
-
+		fmt.Print(msg)
 		fmt.Println("File compiled successfully")
+
 		return nil
 	},
+
+	SilenceUsage: true,
 }
