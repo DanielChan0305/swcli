@@ -11,15 +11,15 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "swcli",
 	Short: "Swcli helps you compile your C++ code more efficiently and enables easy importing of template code.",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		// Do Stuff Here
+		return nil
 	},
 }
 
-
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		fmt.Fprintln(os.Stderr, "Error:", err)
 		os.Exit(1)
 	}
 }
