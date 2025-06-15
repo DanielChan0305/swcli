@@ -9,10 +9,31 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func init() {
+	// init with viper
+	cobra.OnInitialize(initConfig)
+
+	// add commands
 	rootCmd.AddCommand(compileCmd)
+}
+
+/*
+initConfig configs the compile function by loading default value of flags from .config file
+*/
+func initConfig() {
+	viper.SetConfigName("compile")
+	viper.SetConfigType("json")
+	viper.AddConfigPath("config")
+	viper.AutomaticEnv()
+
+	if err := viper.ReadInConfig(); err == nil {
+		fmt.Println("✅ Using config file:", viper.ConfigFileUsed())
+	} else {
+		fmt.Println("❌ Unable to read from config file, please check whether file exists")
+	}
 }
 
 /*
