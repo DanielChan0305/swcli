@@ -12,6 +12,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	configFolder 	string = "config"
+	compileConfig 	string = "compile.json"
+)
+
 func init() {
 	// init with viper
 	cobra.OnInitialize(initConfig)
@@ -24,15 +29,16 @@ func init() {
 initConfig configs the compile function by loading default value of flags from .config file
 */
 func initConfig() {
-	viper.SetConfigName("compile")
-	viper.SetConfigType("json")
-	viper.AddConfigPath("config")
+	viper.SetConfigName(strings.TrimSuffix(compileConfig, filepath.Ext(compileConfig)))
+	viper.SetConfigType(filepath.Ext(compileConfig))
+	viper.AddConfigPath(configFolder)
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("✅ Using config file:", viper.ConfigFileUsed())
 	} else {
 		fmt.Println("❌ Unable to read from config file, please check whether file exists")
+		
 	}
 }
 
