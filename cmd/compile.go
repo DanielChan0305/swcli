@@ -6,15 +6,15 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 
+	"github.com/DanielChan0305/swcli/helper"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var (
-	configFolder 	string = "config"
-	compileConfig 	string = "compile.json"
+	configFolder  string = "config"
+	compileConfig string = "compile.json"
 )
 
 func init() {
@@ -23,14 +23,16 @@ func init() {
 
 	// add commands
 	rootCmd.AddCommand(compileCmd)
+
+	// add flags
+	compileCmd.Flags().Int("std", -1, "Select the std version for compilation")
 }
 
 /*
 initConfig configs the compile function by loading default value of flags from .config file
 */
 func initConfig() {
-	viper.SetConfigName(strings.TrimSuffix(compileConfig, filepath.Ext(compileConfig)))
-	viper.SetConfigType(filepath.Ext(compileConfig))
+	viper.SetConfigName(helper.TrimExt(compileConfig))
 	viper.AddConfigPath(configFolder)
 	viper.AutomaticEnv()
 
@@ -38,7 +40,7 @@ func initConfig() {
 		fmt.Println("✅ Using config file:", viper.ConfigFileUsed())
 	} else {
 		fmt.Println("❌ Unable to read from config file, please check whether file exists")
-		
+		fmt.Println("❌", err)
 	}
 }
 
@@ -86,9 +88,13 @@ buildExecutable builds an executable file fromo .cpp file
 
 Returns the terminal output and errors and compile is unsucessfully
 */
-func buildExecutable(filename string) error {
-	var filenameWithoutExtension = strings.TrimSuffix(filename, filepath.Ext(filename))
-	cmd := exec.Command("bash", "-c", fmt.Sprintf("g++ %s -o %s", filename, filenameWithoutExtension), "--color=force")
+func buildExecutable(filename string, std int) error {
+	statement := fmt.Sprintf("g++ %s -o %s", filename, helper.TrimExt(filename))
+	// select version
+	statement += " -std=c++" + fmt.Sprintf("%d", std)
+
+	fmt.Println(statement)
+	cmd := exec.Command("bash", "-c", statement)
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -118,8 +124,19 @@ var compileCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// load the default value for std
+		std := viper.GetInt("std")
+
+		if tmp, err := cmd.Flags().GetInt("std"); err != nil {
+			// error when reading std flag
+			return fmt.Errorf("%w", err)
+		} else if tmp != -1 {
+			// overwrite default value with user value for std
+			std = tmp
+		}
+
 		// start compiling
-		err := buildExecutable(args[0])
+		err := buildExecutable(args[0], std)
 
 		if err != nil {
 			return fmt.Errorf("%w", err)
