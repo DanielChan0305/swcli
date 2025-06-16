@@ -21,9 +21,6 @@ var (
 )
 
 func init() {
-	// init with viper
-	cobra.OnInitialize(initConfig)
-
 	// add commands
 	rootCmd.AddCommand(compileCmd)
 
@@ -34,7 +31,7 @@ func init() {
 /*
 initConfig configs the compile function by loading default value of flags from .config file
 */
-func initConfig() {
+func viperConfig() {
 	viper.SetConfigName(helper.TrimExt(compileConfig))
 	viper.AddConfigPath(configFolder)
 	viper.AutomaticEnv()
@@ -140,6 +137,8 @@ var compileCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
+		viperConfig()
+
 		// load the default value for std
 		std := viper.GetInt("std")
 

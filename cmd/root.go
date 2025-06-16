@@ -11,8 +11,8 @@ var rootCmd = &cobra.Command{
 	Use:   "swcli",
 	Short: "Swcli helps you compile your C++ code more efficiently and enables easy importing of template code.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		// Do Stuff Here
-		return nil
+		// Show help when no subcommands or arguments are provided
+		return cmd.Help()
 	},
 }
 
