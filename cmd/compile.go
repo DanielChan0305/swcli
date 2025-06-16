@@ -86,10 +86,10 @@ Returns the terminal output and errors and compile is unsucessfully
 func buildExecutable(filename string, std int) error {
 	statement := fmt.Sprintf("g++ %s -o %s -fdiagnostics-color", filename, helper.TrimExt(filename))
 	// select std version
-	statement += " -std=c++" + fmt.Sprintf("%d", std)
+	statement += fmt.Sprintf(" -std=c++%d", std)
 
 	// setup spinner and command
-	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
+	s := spinner.New(spinner.CharSets[78], 100*time.Millisecond)
 	s.Suffix = " " + statement + "\n"
 	cmd := exec.Command("bash", "-c", statement)
 
@@ -98,9 +98,9 @@ func buildExecutable(filename string, std int) error {
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		s.FinalMSG = "❌ " + err.Error() + "\n"
+		s.FinalMSG = fmt.Sprintf("❌ %s\n", err.Error())
 	} else {
-		s.FinalMSG = "✅ " + statement + "\n"
+		s.FinalMSG = fmt.Sprintf("✅ %s\n", statement)
 	}
 
 	s.Stop()
