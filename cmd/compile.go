@@ -3,11 +3,14 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"time"
 
 	"github.com/DanielChan0305/swcli/helper"
+	"github.com/briandowns/spinner"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -56,13 +59,6 @@ func isFilenameValid(filename string) (bool, error) {
 		return false, errors.New("filename can't be empty")
 	}
 
-	// check whether filename contains invalid characters
-	//re := regexp.MustCompile(`^[A-Za-z0-9\\-\\._]+$`)
-
-	//if !re.MatchString(filename) {
-	//	return false, errors.New("filename contains invalid characters")
-	//}
-
 	// check whether file exists
 	info, err := os.Stat(filename)
 	if os.IsNotExist(err) {
@@ -90,16 +86,56 @@ Returns the terminal output and errors and compile is unsucessfully
 */
 func buildExecutable(filename string, std int) error {
 	statement := fmt.Sprintf("g++ %s -o %s", filename, helper.TrimExt(filename))
-	// select version
+	// select std version
 	statement += " -std=c++" + fmt.Sprintf("%d", std)
 
-	fmt.Println(statement)
+	// setup spinner and command
+	s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
+	s.Suffix = " " + statement
+	s.FinalMSG = "✅ " + statement + "\n"
 	cmd := exec.Command("bash", "-c", statement)
 
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	// create pipes for stdout and stderr
+	stdoutPipe, err := cmd.StdoutPipe()
+	if err != nil {
+		return err
+	}
+	stderrPipe, err := cmd.StderrPipe()
+	if err != nil {
+		return err
+	}
 
-	err := cmd.Run()
+	// activate spinner and start command
+	s.Start()
+	if err := cmd.Start(); err != nil {
+		s.Stop()
+		return err
+	}
+
+	// read output concurrently
+	stdoutCh := make(chan []byte)
+	stderrCh := make(chan []byte)
+	go func() {
+		out, _ := io.ReadAll(stdoutPipe)
+		stdoutCh <- out
+	}()
+	go func() {
+		out, _ := io.ReadAll(stderrPipe)
+		stderrCh <- out
+	}()
+
+	// wait for command to finish
+	err = cmd.Wait()
+	s.Stop()
+
+	// collect output
+	stdoutBuf := <-stdoutCh
+	stderrBuf := <-stderrCh
+
+	// pipe output to os.Stdout and os.Stderr
+	os.Stdout.Write(stdoutBuf)
+	os.Stderr.Write(stderrBuf)
+
 	if err != nil {
 		return err
 	}
