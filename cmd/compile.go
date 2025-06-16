@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"time"
 
 	"github.com/DanielChan0305/swcli/helper"
@@ -56,6 +57,15 @@ Otherwise, Returns true
 func isFilenameValid(filename string) (bool, error) {
 	if filename == "" {
 		return false, errors.New("filename can't be empty")
+	}
+
+	// check if filename matches the required regex (allowing relative and absolute paths, alphanumerics, underscores, hyphens, and dots)
+	matched, err := regexp.MatchString(`^([a-zA-Z0-9_\-./]+)$`, filename)
+	if err != nil {
+		return false, fmt.Errorf("error matching filename regex: %w", err)
+	}
+	if !matched {
+		return false, errors.New("filename contains invalid characters or format")
 	}
 
 	// check whether file exists
