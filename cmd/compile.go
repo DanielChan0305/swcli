@@ -3,10 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"os"
 	"os/exec"
-	"path/filepath"
-	"regexp"
 	"time"
 
 	"github.com/DanielChan0305/swcli/helper"
@@ -29,7 +26,7 @@ func init() {
 }
 
 /*
-initConfig configs the compile function by loading default value of flags from .config file
+viperConfg loads the default value of flags from .config file
 */
 func viperConfig() {
 	viper.SetConfigName(helper.TrimExt(compileConfig))
@@ -45,55 +42,16 @@ func viperConfig() {
 }
 
 /*
-isFilenameValid is a helper function, which validates the file name
-
-Returns false if filename contains invalid characters or file doesn't exists
-
-Otherwise, Returns true
-*/
-func isFilenameValid(filename string) (bool, error) {
-	if filename == "" {
-		return false, errors.New("filename can't be empty")
-	}
-
-	// check if filename matches the required regex (allowing relative and absolute paths, alphanumerics, underscores, hyphens, and dots)
-	matched, err := regexp.MatchString(`^([a-zA-Z0-9_\-./]+)$`, filename)
-	if err != nil {
-		return false, fmt.Errorf("error matching filename regex: %w", err)
-	}
-	if !matched {
-		return false, errors.New("filename contains invalid characters or format")
-	}
-
-	// check whether file exists
-	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		return false, errors.New("file doesn't exist")
-	}
-
-	if info.IsDir() {
-		return false, errors.New("please enter filename not directory name")
-	}
-
-	// check whether it is a cpp file
-	ext := filepath.Ext(filename)
-
-	if ext != ".cpp" {
-		return false, errors.New("only .cpp files can be compiled")
-	}
-
-	return true, nil
-}
-
-/*
 buildExecutable builds an executable file fromo .cpp file
 
-Returns the terminal output and errors and compile is unsucessfully
+Pipes the terminal output and errors, return error is compile is unsuccessful
 */
 func buildExecutable(filename string, std int) error {
 	statement := fmt.Sprintf("g++ %s -o %s -fdiagnostics-color", filename, helper.TrimExt(filename))
 	// select std version
-	statement += fmt.Sprintf(" -std=c++%d", std)
+	statement += fmt.Sprintf(" -std=c++%d ", std)
+	// add default compilation flags
+	statement += "-O2 -Wall -Wextra -Wshadow -fsanitize=address,undefined"
 
 	// setup spinner and command
 	s := spinner.New(spinner.CharSets[78], 100*time.Millisecond)
@@ -122,7 +80,7 @@ func buildExecutable(filename string, std int) error {
 
 // compileCmd handles the compilation of executables from c++ source files
 var compileCmd = &cobra.Command{
-	Use:   "compile [filename]",
+	Use:   "compile [filename (include extension)]",
 	Short: "Compiles the cpp file into executable",
 	Args: func(cmd *cobra.Command, args []string) error {
 		// validates the filename
@@ -130,8 +88,19 @@ var compileCmd = &cobra.Command{
 			return errors.New("filename can't be empty")
 		}
 
-		if _, err := isFilenameValid(args[0]); err != nil {
+		filename := args[0]
+		if _, err := helper.IsFilenameValid(filename); err != nil {
 			return err
+		}
+
+		// check whether file exists
+		if !helper.IsFileExist(filename) {
+			return errors.New("file doesn't exist")
+		}
+
+		// check whether it is a cpp file
+		if !helper.IsCpp(filename) {
+			return errors.New("only .cpp file can be compiled")
 		}
 
 		return nil
