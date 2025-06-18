@@ -1,6 +1,7 @@
 #ifndef MATH_HPP
 #define MATH_HPP
 
+namespace modint{
 template <typename T, T MOD> class modint{
     private:
         T x;
@@ -73,7 +74,7 @@ template <typename T, T MOD> class modint{
             return *this;
         }
 };
-
+}// namespace modint
 
 
 #endif
