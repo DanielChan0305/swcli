@@ -1,5 +1,5 @@
-#ifndef MATH_HPP
-#define MATH_HPP
+#ifndef MODINT_H 
+#define MODINT_H
 
 namespace modint{
 template <typename T, T MOD> class modint{
