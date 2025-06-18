@@ -8,9 +8,15 @@ typedef long long ll;
 #define pll pair<ll, ll>
 
 void solve(){
-    modint<int, 1000000007> a(3); // Replace 1000000007 with the correct modulus if needed
+    modint<ll, 5> a(3); // Replace 1000000007 with the correct modulus if needed
+    modint<ll, 5> b(4);
+
+    b -= a;
+    a--;
 
     cout << a << endl;
+
+    cout << b << endl;
 }
 
 int main(){
