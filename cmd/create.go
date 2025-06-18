@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
+	"os/exec"
 
 	"github.com/DanielChan0305/swcli/helper"
 	"github.com/spf13/cobra"
@@ -37,7 +39,19 @@ var createCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
+		filename := args[0]
+
+		cpCmd := exec.Command("bash", "-c", fmt.Sprintf("cp %s %s", starterTemplate, filename))
+		err := cpCmd.Run()
+
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("✅ File created successfully")
+
 		return nil
+
 	},
 
 	SilenceUsage: true,
