@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/DanielChan0305/swcli/cmd/template"
 	"github.com/spf13/cobra"
 )
 
@@ -29,6 +30,8 @@ func init() {
 	rootCmd.AddCommand(createCmd)
 	rootCmd.AddCommand(compileCmd)
 	rootCmd.AddCommand(versionCmd)
+
+	rootCmd.AddCommand(template.TemplateCmd)
 
 	// add flags
 	compileCmd.Flags().Int("std", -1, "Select the std version for compilation")

@@ -1,20 +1,19 @@
-package cmd
+package template
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
-func init() {
-	rootCmd.AddCommand(versionCmd)
+// templateCmd is the function which supports the use and import of custom templates
+var TemplateCmd = &cobra.Command{
+	Use:   "template",
+	Short: "Supports the use and import of custom templates",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return cmd.Help()
+	},
 }
 
-// versionCmd is the function which outputs the version number of Swcli
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Output the version number of Swcli",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Version of Swcli:  v0.1")
-	},
+func init() {
+	TemplateCmd.AddCommand(getCmd)
+	TemplateCmd.AddCommand(listCmd)
 }
