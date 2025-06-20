@@ -7,6 +7,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	// path for config files for compile function
+	configCompileFolder  string = "config"
+	configCompileFilname string = "compile.json"
+
+	// path for config files of template function
+	configTemplatePath string = "config/template.json"
+)
+
 // rootCmd is inits the root command of swcli and is the gateway to other functions
 var rootCmd = &cobra.Command{
 	Use:   "swcli",

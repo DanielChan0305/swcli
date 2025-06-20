@@ -9,10 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	// path for config files of template function
-	configTemplatePath string = "config/template.json"
-)
+
 
 // createCmd creates a new file based on the starter template
 var createCmd = &cobra.Command{

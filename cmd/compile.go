@@ -12,11 +12,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
-	// path for config files for compile function
-	configCompileFolder  string = "config"
-	configCompileFilname string = "compile.json"
-)
+
 
 /*
 viperConfg loads the default value of flags from .config file

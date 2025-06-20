@@ -8,10 +8,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	// the path for the configuration file of template function
-	configTemplatePath = "config/template.json"
-)
 
 // listCmd lists all custom templates
 var listCmd = &cobra.Command{
@@ -33,7 +29,7 @@ var listCmd = &cobra.Command{
 		}
 
 		for ix, template := range templates {
-			fmt.Printf("%d -- %s\n", ix, helper.TrimExt(template.Name()))
+			fmt.Printf("%d - %s\n", ix, helper.TrimExt(template.Name()))
 		}
 
 		return nil
