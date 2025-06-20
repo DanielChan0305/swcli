@@ -4,12 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/DanielChan0305/swcli/helper"
 	"github.com/spf13/cobra"
 )
-
-
 
 // createCmd creates a new file based on the starter template
 var createCmd = &cobra.Command{
@@ -37,6 +36,7 @@ var createCmd = &cobra.Command{
 
 		// load from json file
 		starterTemplatePath, err := helper.JsonGetFieldString(configTemplatePath, "starterTemplatePath")
+		starterTemplatePath = filepath.Join(helper.GetExecPath(), starterTemplatePath)
 
 		if err != nil {
 			return err
@@ -44,9 +44,10 @@ var createCmd = &cobra.Command{
 
 		// Execute the command
 		cpCmd := exec.Command("bash", "-c", fmt.Sprintf("cp %s %s", starterTemplatePath, filename))
-		err = cpCmd.Run()
+		output, err := cpCmd.CombinedOutput()
 
 		if err != nil {
+			fmt.Println(string(output))
 			return err
 		}
 

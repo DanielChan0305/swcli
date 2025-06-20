@@ -16,6 +16,7 @@ var listCmd = &cobra.Command{
 		// the stored value in the configuration file
 		// indicating the path of the folder storing the templates
 		templateFolder, err := helper.JsonGetFieldString(configTemplatePath, "templateFolder")
+		templateFolder = filepath.Join(helper.GetExecPath(), templateFolder)
 
 		if err != nil {
 			return err
@@ -30,7 +31,7 @@ var listCmd = &cobra.Command{
 
 		// displaying the template files
 		for ix, template := range templates {
-			fmt.Printf("%d - %s\n", ix, helper.TrimExt(template))
+			fmt.Printf("%d - %s\n", ix, helper.TrimExt(filepath.Base(template)))
 		}
 
 		return nil

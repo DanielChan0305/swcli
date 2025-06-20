@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/DanielChan0305/swcli/helper"
 	"github.com/atotto/clipboard"
@@ -36,7 +37,7 @@ var copyCmd = &cobra.Command{
 		}
 
 		// check whether path is valid
-		templatePath := templateFolder + "/" + templateName + ".h"
+		templatePath := filepath.Join(helper.GetExecPath(), templateFolder, templateName+".h")
 		if !helper.IsFileExist(templatePath) {
 			return fmt.Errorf("can't find template: %s", templateName)
 		}
