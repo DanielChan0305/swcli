@@ -55,7 +55,7 @@ var copyCmd = &cobra.Command{
 			return err
 		}
 
-		fmt.Printf("✅ Copied %s into clipboard\n", helper.TrimExt(templatePath))
+		fmt.Printf("✅ Copied from template into clipboard: %s\n", helper.TrimExt(templatePath))
 
 		return nil
 	},
