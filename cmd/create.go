@@ -3,12 +3,10 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"os"
 	"os/exec"
 
 	"github.com/DanielChan0305/swcli/helper"
 	"github.com/spf13/cobra"
-	"github.com/tidwall/gjson"
 )
 
 var (
@@ -39,19 +37,12 @@ var createCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		filename := args[0]
 
-		// Read file content
-		jsonData, err := os.ReadFile(configTemplatePath)
+		// load from json file
+		starterTemplatePath, err := helper.JsonGetFieldString(configTemplatePath, "starterTemplatePath")
+
 		if err != nil {
-			return fmt.Errorf("error reading file %s: %v", configTemplatePath, err)
+			return err
 		}
-
-		// Validate JSON
-		if !gjson.ValidBytes(jsonData) {
-			return errors.New("invalid JSON format")
-		}
-
-		// Extract info
-		starterTemplatePath := gjson.GetBytes(jsonData, "starterTemplatePath").String()
 
 		// Execute the command
 		cpCmd := exec.Command("bash", "-c", fmt.Sprintf("cp %s %s", starterTemplatePath, filename))
