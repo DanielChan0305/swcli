@@ -21,12 +21,14 @@ var listCmd = &cobra.Command{
 			return err
 		}
 
+		// get files with .h extension
 		templates, err := filepath.Glob(templateFolder + "/*.h")
 
 		if err != nil {
 			return err
 		}
 
+		// displaying the template files
 		for ix, template := range templates {
 			fmt.Printf("%d - %s\n", ix, helper.TrimExt(template))
 		}

@@ -27,6 +27,7 @@ var copyCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
+		// load templateName and templateFolder from config files
 		templateName := args[0]
 		templateFolder, err := helper.JsonGetFieldString(configTemplatePath, "templateFolder")
 
@@ -34,20 +35,22 @@ var copyCmd = &cobra.Command{
 			return err
 		}
 
+		// check whether path is valid
 		templatePath := templateFolder + "/" + templateName + ".h"
-		//fmt.Println(templatePath)
 		if !helper.IsFileExist(templatePath) {
 			return fmt.Errorf("can't find template: %s", templateName)
 		}
 
-		fmt.Printf("✅ Found template: %s\n", helper.TrimExt(templatePath))
+		// read from path
 		templateContent, err := os.ReadFile(templatePath)
 
 		if err != nil {
 			return err
 		}
 
+		// copy to clipboard
 		err = clipboard.WriteAll(string(templateContent))
+
 		if err != nil {
 			return err
 		}
