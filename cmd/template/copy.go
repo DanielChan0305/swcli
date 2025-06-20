@@ -30,14 +30,10 @@ var copyCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// load templateName and templateFolder from config files
 		templateName := args[0]
-		templateFolder, err := helper.JsonGetFieldString(configTemplatePath, "templateFolder")
-
-		if err != nil {
-			return err
-		}
+		templateFolder := helper.GetConfigField("templateFolder")
 
 		// check whether path is valid
-		templatePath := filepath.Join(helper.GetExecPath(), templateFolder, templateName+".h")
+		templatePath := filepath.Join(templateFolder, templateName+".h")
 		if !helper.IsFileExist(templatePath) {
 			return fmt.Errorf("can't find template: %s", templateName)
 		}

@@ -10,36 +10,25 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+var configPath string = "/home/danielc/.config/swcli/config.json"
+
 func TrimExt(filename string) string {
 	return strings.TrimSuffix(filename, filepath.Ext(filename))
 }
 
-// JsonGetField gets the value of field from json file and returns as string
-func JsonGetFieldString(filename string, fieldname string) (string, error) {
+// GetConfigField gets the value for field from json file
+func GetConfigField(fieldname string) string {
 	// Read file content
-	jsonData, err := os.ReadFile(filename)
+	jsonData, err := os.ReadFile(configPath)
 	if err != nil {
-		return "", fmt.Errorf("error reading file %s: %v", filename, err)
+		panic(fmt.Errorf("error reading file %s: %v", configPath, err))
 	}
 
 	// Validate JSON
 	if !gjson.ValidBytes(jsonData) {
-		return "", errors.New("invalid JSON format")
+		panic(errors.New("invalid JSON format at config file"))
 	}
 
 	// Extract info
-	return gjson.GetBytes(jsonData, fieldname).String(), nil
-}
-
-// GetExecPath returns the path of the executable, helping transform relative path to absolute path
-// Panics if failed
-func GetExecPath() string {
-	exePath, err := os.Executable()
-	if err != nil {
-		panic("can't find valid path of executable")
-	}
-
-	exePath = filepath.Dir(exePath)
-
-	return exePath
+	return gjson.GetBytes(jsonData, fieldname).String()
 }

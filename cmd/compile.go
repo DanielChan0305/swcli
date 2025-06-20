@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"strconv"
 	"time"
 
 	"github.com/DanielChan0305/swcli/helper"
@@ -11,8 +12,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
-
-
 
 /*
 viperConfg loads the default value of flags from .config file
@@ -95,10 +94,11 @@ var compileCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		viperConfig()
-
 		// load the default value for std
-		std := viper.GetInt("std")
+		std, err := strconv.Atoi(fmt.Sprintf("%v", helper.GetConfigField("std")))
+		if err != nil {
+			return err
+		}
 
 		if tmp, err := cmd.Flags().GetInt("std"); err != nil {
 			// error when reading std flag
@@ -109,7 +109,7 @@ var compileCmd = &cobra.Command{
 		}
 
 		// start compiling
-		err := buildExecutable(args[0], std)
+		err = buildExecutable(args[0], std)
 
 		if err != nil {
 			return fmt.Errorf("%w", err)

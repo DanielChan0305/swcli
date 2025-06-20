@@ -15,12 +15,7 @@ var listCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// the stored value in the configuration file
 		// indicating the path of the folder storing the templates
-		templateFolder, err := helper.JsonGetFieldString(configTemplatePath, "templateFolder")
-		templateFolder = filepath.Join(helper.GetExecPath(), templateFolder)
-
-		if err != nil {
-			return err
-		}
+		templateFolder := helper.GetConfigField("templateFolder")
 
 		// get files with .h extension
 		templates, err := filepath.Glob(templateFolder + "/*.h")

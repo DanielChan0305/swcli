@@ -2,10 +2,8 @@ package cmd
 
 import (
 	"os"
-	"path/filepath"
 
 	"github.com/DanielChan0305/swcli/cmd/template"
-	"github.com/DanielChan0305/swcli/helper"
 	"github.com/spf13/cobra"
 )
 
@@ -38,9 +36,6 @@ func Execute() {
 
 // Setups and add commands, subcommands to root command
 func init() {
-	configTemplatePath = filepath.Join(helper.GetExecPath(), configTemplatePath)
-	configCompileFolder = filepath.Join(helper.GetExecPath(), configCompileFolder)
-
 	rootCmd.AddCommand(createCmd)
 	rootCmd.AddCommand(compileCmd)
 	rootCmd.AddCommand(versionCmd)
