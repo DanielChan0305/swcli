@@ -2,12 +2,11 @@ package template
 
 import (
 	"fmt"
-	"os"
+	"path/filepath"
 
 	"github.com/DanielChan0305/swcli/helper"
 	"github.com/spf13/cobra"
 )
-
 
 // listCmd lists all custom templates
 var listCmd = &cobra.Command{
@@ -22,14 +21,14 @@ var listCmd = &cobra.Command{
 			return err
 		}
 
-		templates, err := os.ReadDir(templateFolder)
+		templates, err := filepath.Glob(templateFolder + "/*.h")
 
 		if err != nil {
 			return err
 		}
 
 		for ix, template := range templates {
-			fmt.Printf("%d - %s\n", ix, helper.TrimExt(template.Name()))
+			fmt.Printf("%d - %s\n", ix, helper.TrimExt(template))
 		}
 
 		return nil
