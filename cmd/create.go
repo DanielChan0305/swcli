@@ -13,10 +13,6 @@ var (
 	starterTemplate string = "library/starterTemplate.cpp"
 )
 
-func init() {
-	rootCmd.AddCommand(createCmd)
-}
-
 // createCmd creates a new file based on the starter template
 var createCmd = &cobra.Command{
 	Use:   "create [filename]",

@@ -6,10 +6,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func init() {
-	rootCmd.AddCommand(versionCmd)
-}
-
 // versionCmd is the function which outputs the version number of Swcli
 var versionCmd = &cobra.Command{
 	Use:   "version",

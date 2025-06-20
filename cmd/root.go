@@ -23,3 +23,14 @@ func Execute() {
 		os.Exit(1)
 	}
 }
+
+// Setups and add commands, subcommands to root command
+func init() {
+	rootCmd.AddCommand(createCmd)
+	rootCmd.AddCommand(compileCmd)
+	rootCmd.AddCommand(versionCmd)
+
+	// add flags
+	compileCmd.Flags().Int("std", -1, "Select the std version for compilation")
+
+}

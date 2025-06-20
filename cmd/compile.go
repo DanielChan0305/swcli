@@ -17,14 +17,6 @@ var (
 	compileConfig string = "compile.json"
 )
 
-func init() {
-	// add commands
-	rootCmd.AddCommand(compileCmd)
-
-	// add flags
-	compileCmd.Flags().Int("std", -1, "Select the std version for compilation")
-}
-
 /*
 viperConfg loads the default value of flags from .config file
 */
