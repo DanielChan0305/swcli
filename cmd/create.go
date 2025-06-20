@@ -3,14 +3,16 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"os"
 	"os/exec"
 
 	"github.com/DanielChan0305/swcli/helper"
 	"github.com/spf13/cobra"
+	"github.com/tidwall/gjson"
 )
 
 var (
-	starterTemplate string = "library/starterTemplate.cpp"
+	configTemplatePath string = "config/template.json"
 )
 
 // createCmd creates a new file based on the starter template
@@ -37,8 +39,23 @@ var createCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		filename := args[0]
 
-		cpCmd := exec.Command("bash", "-c", fmt.Sprintf("cp %s %s", starterTemplate, filename))
-		err := cpCmd.Run()
+		// Read file content
+		jsonData, err := os.ReadFile(configTemplatePath)
+		if err != nil {
+			return fmt.Errorf("error reading file %s: %v", configTemplatePath, err)
+		}
+
+		// Validate JSON
+		if !gjson.ValidBytes(jsonData) {
+			return errors.New("invalid JSON format")
+		}
+
+		// Extract info
+		starterTemplatePath := gjson.GetBytes(jsonData, "starterTemplatePath").String()
+
+		// Execute the command
+		cpCmd := exec.Command("bash", "-c", fmt.Sprintf("cp %s %s", starterTemplatePath, filename))
+		err = cpCmd.Run()
 
 		if err != nil {
 			return err

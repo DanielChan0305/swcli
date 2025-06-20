@@ -13,16 +13,16 @@ import (
 )
 
 var (
-	configFolder  string = "config"
-	compileConfig string = "compile.json"
+	configCompileFolder  string = "config"
+	configCompileFilname string = "compile.json"
 )
 
 /*
 viperConfg loads the default value of flags from .config file
 */
 func viperConfig() {
-	viper.SetConfigName(helper.TrimExt(compileConfig))
-	viper.AddConfigPath(configFolder)
+	viper.SetConfigName(helper.TrimExt(configCompileFilname))
+	viper.AddConfigPath(configCompileFolder)
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
