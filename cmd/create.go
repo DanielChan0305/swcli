@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	// path for config files of template function
 	configTemplatePath string = "config/template.json"
 )
 

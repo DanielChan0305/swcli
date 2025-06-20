@@ -13,6 +13,7 @@ import (
 )
 
 var (
+	// path for config files for compile function
 	configCompileFolder  string = "config"
 	configCompileFilname string = "compile.json"
 )
