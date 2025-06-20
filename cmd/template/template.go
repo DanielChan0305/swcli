@@ -19,6 +19,6 @@ var TemplateCmd = &cobra.Command{
 }
 
 func init() {
-	TemplateCmd.AddCommand(getCmd)
+	TemplateCmd.AddCommand(copyCmd)
 	TemplateCmd.AddCommand(listCmd)
 }

@@ -10,9 +10,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// getCmd copys the desired template into clipboard
-var getCmd = &cobra.Command{
-	Use:   "get [template name]",
+// copyCmd copys the desired template into clipboard
+var copyCmd = &cobra.Command{
+	Use:   "copy [template name]",
 	Short: "Copys the desired template into clipboard",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
