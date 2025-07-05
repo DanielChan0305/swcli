@@ -28,7 +28,7 @@ template<typename T> class bit{
         }
 
         // get the range sum of [1 - ix]
-        T getStart(int ix){
+        T getPrefix(int ix){
             // shift for 0 base
             ix++;
             T ans = 0;
@@ -42,12 +42,12 @@ template<typename T> class bit{
 
         // get range from [l - r]
         T getRange(int l, int r){
-            return getStart(r) - getStart(l - 1);
+            return getPrefix(r) - getPrefix(l - 1);
         }
 
         // get point value
         T getPoint(int ix){
-            return getStart(ix) - getStart(ix - 1);
+            return getPrefix(ix) - getPrefix(ix - 1);
         }
 
         // getPoint[1 - size] => Output each getPoint
