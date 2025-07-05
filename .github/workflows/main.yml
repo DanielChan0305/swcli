@@ -1,0 +1,23 @@
+name: Templates Build and Test
+on:
+  push:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: create empty folder
+        run: mkdir library/build
+      
+      - name: build make
+        working-directory: ./library/build
+        run: cmake ..
+        
+      - name: make
+        working-directory: ./library/build
+        run: make
+        
+      - name: Test
+        working-directory: ./library/build
+        run: ./tests
