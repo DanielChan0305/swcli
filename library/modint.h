@@ -1,6 +1,8 @@
 #ifndef MODINT_H 
 #define MODINT_H
 
+#include<iostream>
+
 template <typename T, T MOD> class modint{
     private:
         T x;
@@ -14,12 +16,13 @@ template <typename T, T MOD> class modint{
         modint(T value) : x(mod(value)) {}
         modint(): x(0) {}
 
-        friend std::ostream &operator<<(std::ostream& os, const modint& m) {
-            return os << m.x;
-        }
+        template<class T2, T2 MOD2>
+        friend std::ostream &operator<<(std::ostream &os, const modint<T2, MOD2> &m);
+        template<class T2, T2 MOD2>
+        friend std::istream &operator>>(std::istream &is, modint<T2, MOD2> &m);
 
-        friend std::istream &operator>>(std::istream& is, modint& m){
-            return is >> m.x;
+        bool operator==(const modint& m){
+            return (this->x == m.x);
         }
 
         modint &operator=(const modint& m){
@@ -111,5 +114,15 @@ template <typename T, T MOD> class modint{
         }
 };
 
+
+template<class T2, T2 MOD2>
+std::ostream &operator<<(std::ostream& os, const modint<T2, MOD2>& m) {
+    return os << m.x;
+}
+
+template<class T2, T2 MOD2>
+std::istream &operator>>(std::istream& is, modint<T2, MOD2>& m){
+    return is >> m.x;
+}
 
 #endif
