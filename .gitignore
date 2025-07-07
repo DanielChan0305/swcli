@@ -1,7 +1,6 @@
 # Binaries for programs and plugins
 # ignore executation without extensions
-*
-!*.*
+swcli
 
 *.exe
 *.exe~
