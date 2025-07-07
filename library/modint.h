@@ -16,6 +16,10 @@ template <typename T, T MOD> class modint{
         modint(T value) : x(mod(value)) {}
         modint(): x(0) {}
 
+        explicit operator bool() const{
+            return (this->x) != 0;
+        }
+
         template<class T2, T2 MOD2>
         friend std::ostream &operator<<(std::ostream &os, const modint<T2, MOD2> &m);
         template<class T2, T2 MOD2>
@@ -23,6 +27,10 @@ template <typename T, T MOD> class modint{
 
         bool operator==(const modint& m){
             return (this->x == m.x);
+        }
+
+        bool operator!=(const modint& m){
+            return !((*this) == m);
         }
 
         modint &operator=(const modint& m){
