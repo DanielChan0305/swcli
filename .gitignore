@@ -1,4 +1,8 @@
 # Binaries for programs and plugins
+# ignore executation without extensions
+*
+!*.*
+
 *.exe
 *.exe~
 *.dll
