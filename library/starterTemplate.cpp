@@ -14,7 +14,7 @@ int main(){
     cin.tie(0);
     cout.tie(0);
 
-    int NO_OF_TESTCASES = 1;
+    //int NO_OF_TESTCASES = 1;
     cin >> NO_OF_TESTCASES;
 
     for (int TESTCASE = 1; TESTCASE <= NO_OF_TESTCASES; TESTCASE++){
